@@ -13,6 +13,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
+import static com.example.demo.utils.Constantes.URLBASE;
+
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @Api(tags = "01-Controlador Film")
@@ -21,37 +23,33 @@ public class FilmController {
     @Autowired
     private FilmService filmService;
 
-//    @RequestMapping("/")
-//    public void home(HttpServletResponse response) throws IOException {
-//        response.sendRedirect("/films");
-//    }
 
-    @RequestMapping(value = "/films", method = RequestMethod.GET)
+    @RequestMapping(value = URLBASE + "/films", method = RequestMethod.GET)
     @ApiOperation(value = "( findAll ) Trae todos los films", notes = "", response = Film.class)
-    public List<Film> getAll(){
+    public List<Film> getAll() {
         return filmService.getAll();
     }
 
-    @RequestMapping(value = "/film/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = URLBASE + "/film/{id}", method = RequestMethod.GET)
     @ApiOperation(value = "( findById ) Trae un film por Id", notes = "", response = Film.class)
-    public String getById(@PathVariable("id") String id){
+    public String getById(@PathVariable("id") String id) {
         Optional<Film> op = filmService.getFilmById(id);
         Film f;
-        if(op.isPresent()) {
-            f= op.get();
+        if (op.isPresent()) {
+            f = op.get();
             return f.toString();
-        } else{
+        } else {
             return String.format("El film con el id %s no existe", id);
         }
     }
 
-    @PostMapping(value = "/film")
+    @PostMapping(value = URLBASE + "/film")
     @ApiOperation(value = "( Post ) Crea un film", notes = "", response = Film.class)
-    public ResponseEntity<Film> postFilm(@RequestBody Film film){
+    public ResponseEntity<Film> postFilm(@RequestBody Film film) {
         Film f = filmService.create(film);
-        if(f==null){
+        if (f == null) {
             return ResponseEntity.notFound().build();
-        } else{
+        } else {
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("id")
                     .buildAndExpand(f.getId())
@@ -60,14 +58,14 @@ public class FilmController {
         }
     }
 
-    @RequestMapping(value = "/film/{id}", method = RequestMethod.PUT)
+    @RequestMapping(value = URLBASE + "/film/{id}", method = RequestMethod.PUT)
     @ResponseBody
     @ApiOperation(value = "( Put ) Modifica un film", notes = "", response = Film.class)
-    public ResponseEntity<Film> putFilm(@PathVariable("id")String id, @RequestBody Film film){
+    public ResponseEntity<Film> putFilm(@PathVariable("id") String id, @RequestBody Film film) {
         Film f = filmService.update(id, film);
-        if(f==null){
+        if (f == null) {
             return ResponseEntity.notFound().build();
-        }else{
+        } else {
             URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                     .path("id")
                     .buildAndExpand(f.getId())
@@ -76,18 +74,18 @@ public class FilmController {
         }
     }
 
-    @RequestMapping(value = "/film", method = RequestMethod.DELETE)
+    @RequestMapping(value = URLBASE + "/film", method = RequestMethod.DELETE)
     @ApiOperation(value = "( Delete ) Elimina todos los films", notes = "", response = Film.class)
-    public String deleteAll(){
+    public String deleteAll() {
         filmService.deleteAll();
         return "Se han borrado todos los films de la bbdd";
     }
 
-    @DeleteMapping(value = "/film/{id}")
+    @DeleteMapping(value = URLBASE + "/film/{id}")
     @ApiOperation(value = "( Delete ) Elimina un film", notes = "", response = Film.class)
-    public String deleteById(@PathVariable("id") String id){
+    public String deleteById(@PathVariable("id") String id) {
         filmService.deleteById(id);
-        return String.format("El film con Id %s ha sido eliminado", id );
+        return String.format("El film con Id %s ha sido eliminado", id);
     }
 
 }

@@ -1,2 +1,6 @@
 
-http://localhost:8080/swagger-ui/
+- Ruta de swagger: http://localhost:8080/swagger-ui/
+
+- Inicio de la bbdd mongo: mongod --port 27008
+
+- Cambiar el tipo de id, de String a ObjectId

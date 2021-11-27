@@ -9,12 +9,14 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+import static com.example.demo.utils.Constantes.URLBASE;
+
 @CrossOrigin(origins = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RestController
 @Api(tags = "03-Controlador Home")
 public class HomeController {
 
-    @RequestMapping("/")
+    @RequestMapping(URLBASE)
     public void home(HttpServletResponse response) throws IOException {
         response.sendRedirect("/films");
     }
