@@ -5,6 +5,7 @@ import com.example.demo.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -30,34 +31,55 @@ public class UserController {
         return userService.getAll();
     }
 
-    @GetMapping(value = "/user/{id}")
+    @GetMapping(value = URLBASE + "/user/{id}")
     @ApiOperation(value = "( findById ) Trae un user por Id", notes = "", response = User.class)
-    public String getById(@PathVariable("id") String id) {
-        Optional<User> op = userService.getUserById(id);
-        User u;
-        if (op.isPresent()) {
-            u = op.get();
-            return u.toString();
-        } else {
-            return String.format("El usuario con el id %s no existe", id);
-        }
+    public Optional<User> getById(@PathVariable("id") String id) {
+        return userService.getUserById(id);
     }
 
+    @GetMapping(value = URLBASE + "/login/{email}/{password}")
+    @ApiOperation(value = "( login ) Trae un usuario por email y password", notes = "", response = User.class)
+    public Optional<User> getByEmailAndPassword(@PathVariable("email") String email, @PathVariable("password") String password) {
+        return userService.findByEmailAndPassword(email, password);
 
-    // TODO getByUsername
+    }
 
-    @PostMapping(value = URLBASE + "/users")
+    @GetMapping(value = URLBASE + "/user/{email}/{username}")
+    @ApiOperation(value = "( login ) Trae un usuario por email y username", notes = "", response = User.class)
+    public Optional<User> getByEmailAndUsername(@PathVariable("email") String email, @PathVariable("username") String username) {
+        return userService.findByEmailAndUsername(email, username);
+
+    }
+
+    @GetMapping(value = URLBASE + "/user/username/{username}")
+    @ApiOperation(value = "( findByUsername ) Trae un user por username", notes = "", response = User.class)
+    public Optional<User> getByUsername(@PathVariable("username") String username) {
+        return userService.findByUsername(username);
+    }
+
+    @GetMapping(value = URLBASE + "/user/email/{email}")
+    @ApiOperation(value = "( findByEmail ) Trae un user por email", notes = "", response = User.class)
+    public Optional<User> getByEmail(@PathVariable("email") String email) {
+        return userService.findByEmail(email);
+    }
+
+    @PostMapping(value = URLBASE + "/user")
     @ApiOperation(value = "( Post ) crea un user", notes = "", response = User.class)
     public ResponseEntity<User> postUser(@RequestBody User user) {
-        User u = userService.create(user);
-        if (u == null) {
-            return ResponseEntity.notFound().build();
-        } else {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("id")
-                    .buildAndExpand(u.getId())
-                    .toUri();
-            return ResponseEntity.created(uri).body(u);
+        Optional<User> op = getByEmail(user.getEmail());
+        if (!op.isPresent()) {
+            User u = userService.create(user);
+            if (u == null) {
+                return ResponseEntity.notFound().build();
+            }else{
+                URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                        .path("id")
+                        .buildAndExpand(u.getId())
+                        .toUri();
+                return ResponseEntity.created(uri).body(u);
+            }
+        }else{
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
 
@@ -92,3 +114,33 @@ public class UserController {
     }
 
 }
+
+
+//    @GetMapping(value = URLBASE + "/user/{id}")
+//    @ApiOperation(value = "( findById ) Trae un user por Id", notes = "", response = User.class)
+//    public String getById(@PathVariable("id") String id) {
+//        Optional<User> op = userService.getUserById(id);
+//        User u;
+//        if (op.isPresent()) {
+//            u = op.get();
+//            return u.toString();
+//        } else {
+//            return String.format("El usuario con el id %s no existe", id);
+//        }
+//    }
+
+
+//    @PostMapping(value = URLBASE + "/user")
+//    @ApiOperation(value = "( Post ) crea un user", notes = "", response = User.class)
+//    public ResponseEntity<User> postUser(@RequestBody User user) {
+//        User u = userService.create(user);
+//        if (u == null) {
+//            return ResponseEntity.notFound().build();
+//        } else {
+//            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+//                    .path("id")
+//                    .buildAndExpand(u.getId())
+//                    .toUri();
+//            return ResponseEntity.created(uri).body(u);
+//        }
+//    }

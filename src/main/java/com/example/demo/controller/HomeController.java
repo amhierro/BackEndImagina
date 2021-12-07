@@ -2,11 +2,10 @@ package com.example.demo.controller;
 
 import io.swagger.annotations.Api;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static com.example.demo.utils.Constantes.URLBASE;
@@ -16,8 +15,8 @@ import static com.example.demo.utils.Constantes.URLBASE;
 @Api(tags = "03-Controlador Home")
 public class HomeController {
 
-    @RequestMapping(URLBASE)
-    public void home(HttpServletResponse response) throws IOException {
-        response.sendRedirect("/films");
+    @GetMapping(value =URLBASE + "/home")
+    public String home() throws IOException {
+        return "Ruta del home";
     }
 }

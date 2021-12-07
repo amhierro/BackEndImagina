@@ -28,6 +28,9 @@ public class Film {
         this.poster = poster;
     }
 
+    public Film() {
+    }
+
     public String getId() {
         return id;
     }

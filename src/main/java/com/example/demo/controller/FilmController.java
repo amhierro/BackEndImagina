@@ -1,15 +1,20 @@
 package com.example.demo.controller;
 
 import com.example.demo.model.Film;
+import com.example.demo.model.NewFavFilm;
+import com.example.demo.model.User;
 import com.example.demo.service.FilmService;
+import com.example.demo.service.UserService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,24 +28,69 @@ public class FilmController {
     @Autowired
     private FilmService filmService;
 
+    @Autowired
+    private UserService userService;
 
-    @RequestMapping(value = URLBASE + "/films", method = RequestMethod.GET)
+
+    @GetMapping(value = URLBASE + "/films")
     @ApiOperation(value = "( findAll ) Trae todos los films", notes = "", response = Film.class)
     public List<Film> getAll() {
         return filmService.getAll();
     }
 
-    @RequestMapping(value = URLBASE + "/film/{id}", method = RequestMethod.GET)
+    @GetMapping(value = URLBASE + "/film/{id}")
     @ApiOperation(value = "( findById ) Trae un film por Id", notes = "", response = Film.class)
-    public String getById(@PathVariable("id") String id) {
-        Optional<Film> op = filmService.getFilmById(id);
-        Film f;
+    public Optional<Film> getById(@PathVariable("id") String id) {
+        return filmService.getFilmById(id);
+    }
+
+
+    @GetMapping(value = URLBASE + "/film/fav/{id}")
+    @ApiOperation(value = "( findFavUserId ) Trae los films favoritos de un usuario", notes = "", response = Film.class)
+    public List<Film>getFavFilmUser(@PathVariable("id") String id) {
+        Optional<User> op = userService.getUserById(id);
+        User u;
         if (op.isPresent()) {
-            f = op.get();
-            return f.toString();
+            u = op.get();
+            List<Film> favoritas = new ArrayList<Film>();
+            for(String idFilm:u.getFavFilms()){
+                Optional<Film> fe = filmService.getFilmById(idFilm);
+                Film f;
+                if(fe.isPresent()) {
+                    f = fe.get();
+                    favoritas.add(f);
+                }
+            }
+            return favoritas;
         } else {
-            return String.format("El film con el id %s no existe", id);
+            return null;
         }
+    }
+
+    @PostMapping(value = URLBASE + "/fav/film")
+    @ApiOperation(value = "( Post ) Agrega un film a la favFilm de un usuario", notes = "", response = NewFavFilm.class)
+    public ResponseEntity<User> postFavFilm(@RequestBody NewFavFilm newFavFilm){ // email - username - idFilm
+        Optional<User> x = userService.findByEmailAndUsername(newFavFilm.getEmail(), newFavFilm.getUsername());
+        User usuario;
+        if (x.isPresent()) {
+            usuario = x.get();
+            if (!usuario.getFavFilms().contains(newFavFilm.getIdFilm())){
+                usuario.getFavFilms().add(newFavFilm.getIdFilm());
+                User u = userService.update(usuario.getId(), usuario);
+                if (u == null) {
+                    return ResponseEntity.notFound().build();
+                } else {
+                    URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                            .path("id")
+                            .buildAndExpand(u.getId())
+                            .toUri();
+                    return ResponseEntity.created(uri).body(u);
+                }
+            }
+        }else {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 
     @PostMapping(value = URLBASE + "/film")
@@ -58,9 +108,10 @@ public class FilmController {
         }
     }
 
-    @RequestMapping(value = URLBASE + "/film/{id}", method = RequestMethod.PUT)
-    @ResponseBody
+
+    @PutMapping(value = URLBASE + "/film/{id}")
     @ApiOperation(value = "( Put ) Modifica un film", notes = "", response = Film.class)
+    @ResponseBody
     public ResponseEntity<Film> putFilm(@PathVariable("id") String id, @RequestBody Film film) {
         Film f = filmService.update(id, film);
         if (f == null) {
@@ -74,7 +125,8 @@ public class FilmController {
         }
     }
 
-    @RequestMapping(value = URLBASE + "/film", method = RequestMethod.DELETE)
+
+    @DeleteMapping(value = URLBASE + "/film")
     @ApiOperation(value = "( Delete ) Elimina todos los films", notes = "", response = Film.class)
     public String deleteAll() {
         filmService.deleteAll();
@@ -89,3 +141,20 @@ public class FilmController {
     }
 
 }
+
+
+
+
+
+//    @GetMapping(value = URLBASE + "/film/{id}")
+//    @ApiOperation(value = "( findById ) Trae un film por Id", notes = "", response = Film.class)
+//    public String getById(@PathVariable("id") String id) {
+//        Optional<Film> op = filmService.getFilmById(id);
+//        Film f;
+//        if (op.isPresent()) {
+//            f = op.get();
+//            return f.toString();
+//        } else {
+//            return String.format("El film con el id %s no existe", id);
+//        }
+//    }

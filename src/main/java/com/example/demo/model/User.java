@@ -17,10 +17,10 @@ public class User {
     private String email;
     private String password;            //debe estar siempre cifrada bajo sistema AES)
     private List<String> favGenders;    //Array de String (indica el/los género/s favorito/s del usuario)
-    private List<Integer> favFilms;     //lista de IDs de películas a las que haya dado favorito
+    private List<String> favFilms;     //lista de IDs de películas a las que haya dado favorito
     private Role rol;
 
-    public User(String username, String avatar, String email, String password, List<String> favGenders, List<Integer> favFilms, Role rol) {
+    public User(String username, String avatar, String email, String password, List<String> favGenders, List<String> favFilms, Role rol) {
         super();
         this.username = username;
         this.avatar = avatar;
@@ -29,6 +29,10 @@ public class User {
         this.favGenders = favGenders;
         this.favFilms = favFilms;
         this.rol = rol;
+    }
+
+    public User() {
+
     }
 
     public String getId() {
@@ -79,11 +83,11 @@ public class User {
         this.favGenders = favGenders;
     }
 
-    public List<Integer> getFavFilms() {
+    public List<String> getFavFilms() {
         return favFilms;
     }
 
-    public void setFavFilms(List<Integer> favFilms) {
+    public void setFavFilms(List<String> favFilms) {
         this.favFilms = favFilms;
     }
 

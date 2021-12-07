@@ -4,3 +4,8 @@
 - Inicio de la bbdd mongo: mongod --port 27008
 
 - Cambiar el tipo de id, de String a ObjectId
+
+
+
+TODO:
+-
