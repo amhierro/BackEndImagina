@@ -64,12 +64,14 @@ public class UserService {
         userRepository.deleteAll();
     }
 
-    public void deleteById(String id) {
+    public boolean deleteById(String id) {
         Optional<User> x = userRepository.findById(id);
         User deleteUser;
         if (x.isPresent()) {
             deleteUser = x.get();
             userRepository.delete(deleteUser);
+            return true;
         }
+        return false;
     }
 }

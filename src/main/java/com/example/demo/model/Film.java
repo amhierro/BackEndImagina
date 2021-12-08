@@ -6,17 +6,18 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 
 
-@Document
+@Document("Films")
 public class Film {
 
     @Id
     private String id;
     private String titulo;
-    private List<String> genero;        // array de strings = comedia, drama, terror, acción, musical, animación
-    private int anio;                   //indica el año en el que se estrenó
     private String director;
-    private String sinopsis;            //indica el resumen de la película
-    private String poster;              // url al póster de la película
+    private int anio;
+    private String sinopsis;
+    private String poster;
+    private List<String> genero;
+
 
     public Film(String titulo, List<String> genero, int anio, String director, String sinopsis, String poster) {
         super();

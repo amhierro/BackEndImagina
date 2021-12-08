@@ -41,7 +41,6 @@ public class UserController {
     @ApiOperation(value = "( login ) Trae un usuario por email y password", notes = "", response = User.class)
     public Optional<User> getByEmailAndPassword(@PathVariable("email") String email, @PathVariable("password") String password) {
         return userService.findByEmailAndPassword(email, password);
-
     }
 
     @GetMapping(value = URLBASE + "/user/{email}/{username}")
@@ -108,9 +107,13 @@ public class UserController {
 
     @DeleteMapping(value = URLBASE + "/user/{id}")
     @ApiOperation(value = "( Delete ) Elimina un usuario por Id", notes = "", response = User.class)
-    public String deleteById(@PathVariable("id") String id) {
-        userService.deleteById(id);
-        return String.format("El user con Id %s ha sido eliminado", id);
+    public ResponseEntity<String> deleteById(@PathVariable("id") String id) {
+        var isRemoved = userService.deleteById(id);
+        if (!isRemoved) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(id, HttpStatus.OK);
+//        return String.format("El user con Id %s ha sido eliminado", id);
     }
 
 }

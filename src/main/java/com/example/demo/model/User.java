@@ -7,7 +7,7 @@ import java.util.List;
 
 enum Role { ADMIN, BASIC }
 
-@Document
+@Document("Users")
 public class User {
 
     @Id
