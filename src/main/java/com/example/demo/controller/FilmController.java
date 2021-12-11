@@ -40,8 +40,13 @@ public class FilmController {
 
     @GetMapping(value = URLBASE + "/film/{id}")
     @ApiOperation(value = "( findById ) Trae un film por Id", notes = "", response = Film.class)
-    public Optional<Film> getById(@PathVariable("id") String id) {
-        return filmService.getFilmById(id);
+    public String getById(@PathVariable("id") String id) {
+        Optional<Film> optionalFilm = filmService.getFilmById(id);
+        if (optionalFilm.isPresent()){
+         return optionalFilm.get().toString();
+        } else{
+            return String.format("La película con id %s no existe", id);
+        }
     }
 
 

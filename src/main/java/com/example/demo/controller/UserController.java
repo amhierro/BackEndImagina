@@ -33,14 +33,26 @@ public class UserController {
 
     @GetMapping(value = URLBASE + "/user/{id}")
     @ApiOperation(value = "( findById ) Trae un user por Id", notes = "", response = User.class)
-    public Optional<User> getById(@PathVariable("id") String id) {
-        return userService.getUserById(id);
+    public ResponseEntity<String> getById(@PathVariable("id") String id) {
+
+        Optional<User> usuario = this.userService.getUserById(id);
+
+        if (usuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(usuario.get().toString());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("No existe ningún usuario con el id %s", id));
+        }
     }
 
     @GetMapping(value = URLBASE + "/login/{email}/{password}")
     @ApiOperation(value = "( login ) Trae un usuario por email y password", notes = "", response = User.class)
-    public Optional<User> getByEmailAndPassword(@PathVariable("email") String email, @PathVariable("password") String password) {
-        return userService.findByEmailAndPassword(email, password);
+    public ResponseEntity<String> getByEmailAndPassword(@PathVariable("email") String email, @PathVariable("password") String password) {
+        Optional<User> usuario = this.userService.findByEmailAndPassword(email, password);
+        if (usuario.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(usuario.get().toString());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("No existe ningún usuario con el email %s y la password aportada", email));
+        }
     }
 
     @GetMapping(value = URLBASE + "/user/{email}/{username}")
@@ -70,14 +82,14 @@ public class UserController {
             User u = userService.create(user);
             if (u == null) {
                 return ResponseEntity.notFound().build();
-            }else{
+            } else {
                 URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                         .path("id")
                         .buildAndExpand(u.getId())
                         .toUri();
                 return ResponseEntity.created(uri).body(u);
             }
-        }else{
+        } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
     }
