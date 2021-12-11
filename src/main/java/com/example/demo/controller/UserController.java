@@ -118,32 +118,3 @@ public class UserController {
 
 }
 
-
-//    @GetMapping(value = URLBASE + "/user/{id}")
-//    @ApiOperation(value = "( findById ) Trae un user por Id", notes = "", response = User.class)
-//    public String getById(@PathVariable("id") String id) {
-//        Optional<User> op = userService.getUserById(id);
-//        User u;
-//        if (op.isPresent()) {
-//            u = op.get();
-//            return u.toString();
-//        } else {
-//            return String.format("El usuario con el id %s no existe", id);
-//        }
-//    }
-
-
-//    @PostMapping(value = URLBASE + "/user")
-//    @ApiOperation(value = "( Post ) crea un user", notes = "", response = User.class)
-//    public ResponseEntity<User> postUser(@RequestBody User user) {
-//        User u = userService.create(user);
-//        if (u == null) {
-//            return ResponseEntity.notFound().build();
-//        } else {
-//            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-//                    .path("id")
-//                    .buildAndExpand(u.getId())
-//                    .toUri();
-//            return ResponseEntity.created(uri).body(u);
-//        }
-//    }
