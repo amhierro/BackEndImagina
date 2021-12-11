@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.model.enums.Genre;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -16,10 +17,10 @@ public class Film {
     private int anio;
     private String sinopsis;
     private String poster;
-    private List<String> genero;
+    private List<Genre> genero;
 
 
-    public Film(String titulo, List<String> genero, int anio, String director, String sinopsis, String poster) {
+    public Film(String titulo, List<Genre> genero, int anio, String director, String sinopsis, String poster) {
         super();
         this.titulo = titulo;
         this.genero = genero;
@@ -48,11 +49,11 @@ public class Film {
         this.titulo = titulo;
     }
 
-    public List<String> getGenero() {
+    public List<Genre> getGenero() {
         return genero;
     }
 
-    public void setGenero(List<String> genero) {
+    public void setGenero(List<Genre> genero) {
         this.genero = genero;
     }
 

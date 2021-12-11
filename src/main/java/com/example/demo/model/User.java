@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import com.example.demo.model.enums.Genre;
 import com.example.demo.model.enums.Role;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -17,11 +18,12 @@ public class User {
     private String avatar;              //(url al avatar del usuario)
     private String email;
     private String password;            //debe estar siempre cifrada bajo sistema AES)
-    private List<String> favGenders;    //Array de String (indica el/los género/s favorito/s del usuario)
-    private List<String> favFilms;     //lista de IDs de películas a las que haya dado favorito
     private Role rol;
+    private List<Genre> favGenders;    //Array de String (indica el/los género/s favorito/s del usuario)
+    private List<String> favFilms;     //lista de IDs de películas a las que haya dado favorito
 
-    public User(String username, String avatar, String email, String password, List<String> favGenders, List<String> favFilms, Role rol) {
+
+    public User(String username, String avatar, String email, String password, List<Genre> favGenders, List<String> favFilms, Role rol) {
         super();
         this.username = username;
         this.avatar = avatar;
@@ -76,11 +78,11 @@ public class User {
         this.password = password;
     }
 
-    public List<String> getFavGenders() {
+    public List<Genre> getFavGenders() {
         return favGenders;
     }
 
-    public void setFavGenders(List<String> favGenders) {
+    public void setFavGenders(List<Genre> favGenders) {
         this.favGenders = favGenders;
     }
 
