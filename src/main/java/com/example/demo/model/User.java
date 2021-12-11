@@ -1,11 +1,12 @@
 package com.example.demo.model;
 
+import com.example.demo.model.enums.Role;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.List;
 
-enum Role { ADMIN, BASIC }
+
 
 @Document("Users")
 public class User {
