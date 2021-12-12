@@ -103,7 +103,6 @@ public class UserController {
     }
 
     @PutMapping(value = URLBASE + "/user/{id}")
-//    @ResponseBody
     @ApiOperation(value = "( Put ) Modifica un user", notes = "", response = User.class)
     public ResponseEntity putUser(@PathVariable("id") String id, @RequestBody User user) {
         Optional<User> usuario = this.userService.getUserById(id);

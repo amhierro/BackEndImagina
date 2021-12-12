@@ -48,13 +48,14 @@ public class FilmService {
         filmRepository.deleteAll();
     }
 
-    public void deleteById(String id){
+    public boolean deleteById(String id){
         Optional<Film> x = filmRepository.findById(id);
-        Film deleteFilm;
         if(x.isPresent()){
-            deleteFilm = x.get();
-            filmRepository.delete(deleteFilm);
+            Film deleteFilm = x.get();
+            this.filmRepository.delete(deleteFilm);
+            return true;
         }
+        return false;
     }
 
 }

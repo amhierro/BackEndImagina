@@ -40,109 +40,106 @@ public class FilmController {
 
     @GetMapping(value = URLBASE + "/film/{id}")
     @ApiOperation(value = "( findById ) Trae un film por Id", notes = "", response = Film.class)
-    public String getById(@PathVariable("id") String id) {
+    public ResponseEntity getById(@PathVariable("id") String id) {
         Optional<Film> optionalFilm = filmService.getFilmById(id);
-        if (optionalFilm.isPresent()){
-         return optionalFilm.get().toString();
-        } else{
-            return String.format("La película con id %s no existe", id);
+
+        if (optionalFilm.isPresent()) {
+            return ResponseEntity.status(HttpStatus.OK).body(optionalFilm.get());
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("No existe ningún film con el id: %s", id));
         }
     }
 
-
     @GetMapping(value = URLBASE + "/film/fav/{id}")
     @ApiOperation(value = "( findFavUserId ) Trae los films favoritos de un usuario", notes = "", response = Film.class)
-    public List<Film>getFavFilmUser(@PathVariable("id") String id) {
-        Optional<User> op = userService.getUserById(id);
-        User u;
-        if (op.isPresent()) {
-            u = op.get();
+    public ResponseEntity getFavFilmUser(@PathVariable("id") String id) {
+        Optional<User> optionalUser = userService.getUserById(id);
+        if (optionalUser.isPresent()) {
+            User usuario = optionalUser.get();
             List<Film> favoritas = new ArrayList<Film>();
-            for(String idFilm:u.getFavFilms()){
-                Optional<Film> fe = filmService.getFilmById(idFilm);
-                Film f;
-                if(fe.isPresent()) {
-                    f = fe.get();
-                    favoritas.add(f);
+            if (usuario.getFavFilms() != null) {
+                for (String idFilm : usuario.getFavFilms()) {
+                    Optional<Film> fe = filmService.getFilmById(idFilm);
+                    if (fe.isPresent()) {
+                        favoritas.add(fe.get());
+                    }
                 }
+                return ResponseEntity.status(HttpStatus.OK).body(favoritas);
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body(favoritas);
             }
-            return favoritas;
         } else {
-            return null;
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario no existe");
         }
     }
 
     @PostMapping(value = URLBASE + "/fav/film")
     @ApiOperation(value = "( Post ) Agrega un film a la favFilm de un usuario", notes = "", response = NewFavFilm.class)
-    public ResponseEntity<User> postFavFilm(@RequestBody NewFavFilm newFavFilm){ // email - username - idFilm
+    public ResponseEntity postFavFilm(@RequestBody NewFavFilm newFavFilm) { // email - username - idFilm
         Optional<User> x = userService.findByEmailAndUsername(newFavFilm.getEmail(), newFavFilm.getUsername());
-        User usuario;
         if (x.isPresent()) {
-            usuario = x.get();
-            if (!usuario.getFavFilms().contains(newFavFilm.getIdFilm())){
+            User usuario = x.get();
+            if (usuario.getFavFilms() == null) {
+                List<String> favoritas = new ArrayList<>();
+                favoritas.add(newFavFilm.getIdFilm());
+                usuario.setFavFilms(favoritas);
+            } else if(!usuario.getFavFilms().contains(newFavFilm.getIdFilm())){
                 usuario.getFavFilms().add(newFavFilm.getIdFilm());
-                User u = userService.update(usuario.getId(), usuario);
-                if (u == null) {
-                    return ResponseEntity.notFound().build();
-                } else {
-                    URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                            .path("id")
-                            .buildAndExpand(u.getId())
-                            .toUri();
-                    return ResponseEntity.created(uri).body(u);
-                }
             }
-        }else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            User u = userService.update(usuario.getId(), usuario);
+            if (u == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ha ocurrido un error al actualizar");
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body(u);
+            }
         }
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El usuario no existe");
     }
 
     @PostMapping(value = URLBASE + "/film")
     @ApiOperation(value = "( Post ) Crea un film", notes = "", response = Film.class)
-    public ResponseEntity<Film> postFilm(@RequestBody Film film) {
+    public ResponseEntity postFilm(@RequestBody Film film) {
         Film f = filmService.create(film);
         if (f == null) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ha ocurrido un error al crear el film");
         } else {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("id")
-                    .buildAndExpand(f.getId())
-                    .toUri();
-            return ResponseEntity.created(uri).body(f);
+            return ResponseEntity.status(HttpStatus.OK).body(f);
         }
     }
-
 
     @PutMapping(value = URLBASE + "/film/{id}")
     @ApiOperation(value = "( Put ) Modifica un film", notes = "", response = Film.class)
     @ResponseBody
-    public ResponseEntity<Film> putFilm(@PathVariable("id") String id, @RequestBody Film film) {
-        Film f = filmService.update(id, film);
-        if (f == null) {
-            return ResponseEntity.notFound().build();
+    public ResponseEntity putFilm(@PathVariable("id") String id, @RequestBody Film film) {
+        Optional<Film> optionalfilm = this.filmService.getFilmById(id);
+        if (optionalfilm.isPresent()) {
+            Film f = filmService.update(id, film);
+            if (f == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ha ocurrido un error al actualizar el film");
+            } else {
+                return ResponseEntity.status(HttpStatus.OK).body(f);
+            }
         } else {
-            URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
-                    .path("id")
-                    .buildAndExpand(f.getId())
-                    .toUri();
-            return ResponseEntity.created(uri).body(f);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("El film no existe");
         }
-    }
-
-
-    @DeleteMapping(value = URLBASE + "/film")
-    @ApiOperation(value = "( Delete ) Elimina todos los films", notes = "", response = Film.class)
-    public String deleteAll() {
-        filmService.deleteAll();
-        return "Se han borrado todos los films de la bbdd";
     }
 
     @DeleteMapping(value = URLBASE + "/film/{id}")
     @ApiOperation(value = "( Delete ) Elimina un film", notes = "", response = Film.class)
-    public String deleteById(@PathVariable("id") String id) {
-        filmService.deleteById(id);
-        return String.format("El film con Id %s ha sido eliminado", id);
+    public ResponseEntity<String> deleteById(@PathVariable("id") String id) {
+        boolean isRemoved = filmService.deleteById(id);
+        if (!isRemoved) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("El film con id: %s no existe", id));
+        } else {
+            return ResponseEntity.status(HttpStatus.OK).body(String.format("El film con id: %s ha sido eliminado", id));
+        }
+    }
+
+    @DeleteMapping(value = URLBASE + "/film")
+    @ApiOperation(value = "( Delete ) Elimina todos los films", notes = "", response = Film.class)
+    public ResponseEntity<String> deleteAll() {
+        this.filmService.deleteAll();
+        return ResponseEntity.status(HttpStatus.OK).body("Se han borrado todos los films de la bbdd");
     }
 
 }
