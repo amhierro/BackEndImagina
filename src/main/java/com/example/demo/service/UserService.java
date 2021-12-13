@@ -47,13 +47,13 @@ public class UserService {
         User newUser;
         if (x.isPresent()) { // si existe la actualiza
             newUser = x.get();
-            newUser.setUsername(u.getUsername());
-            newUser.setAvatar(u.getAvatar());
-            newUser.setEmail(u.getEmail());
-            newUser.setPassword(u.getPassword());
-            newUser.setFavGenders(u.getFavGenders());
-            newUser.setFavFilms(u.getFavFilms());
-            newUser.setRol(u.getRol());
+//            newUser.setUsername(u.getUsername());
+//            newUser.setAvatar(u.getAvatar());
+//            newUser.setEmail(u.getEmail());
+//            newUser.setPassword(u.getPassword());
+//            newUser.setFavGenders(u.getFavGenders());
+//            newUser.setFavFilms(u.getFavFilms());
+//            newUser.setRol(u.getRol());
             return userRepository.save(newUser);
         } else { // si no existe la crea
             return userRepository.save(new User(u.getUsername(), u.getAvatar(), u.getEmail(), u.getPassword(), u.getFavGenders(), u.getFavFilms(), u.getRol()));

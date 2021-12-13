@@ -1,6 +1,6 @@
 package com.example.demo.controller;
 
-import com.example.demo.model.enums.Role;
+import com.example.demo.model.enums.Rol;
 import com.example.demo.service.RolesService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +23,7 @@ public class RolesController {
     private RolesService rolesService;
 
     @GetMapping(value = URLBASE + "/roles")
-    @ApiOperation(value = "( findAll ) Trae todos los roles", notes = "", response = Role.class)
+    @ApiOperation(value = "( findAll ) Trae todos los roles", notes = "", response = Rol.class)
     public List<String> getAllRoles() {
         return rolesService.getAllRoles();
     }

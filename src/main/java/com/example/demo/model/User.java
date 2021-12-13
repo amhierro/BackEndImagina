@@ -1,16 +1,21 @@
 package com.example.demo.model;
 
 import com.example.demo.model.enums.Genre;
-import com.example.demo.model.enums.Role;
+import com.example.demo.model.enums.Rol;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 
 
 @Document("Users")
-public class User {
+public class User  implements UserDetails {
 
     @Id
     private String id;
@@ -18,12 +23,12 @@ public class User {
     private String avatar;              //(url al avatar del usuario)
     private String email;
     private String password;            //debe estar siempre cifrada bajo sistema AES)
-    private Role rol;
+    private Rol rol;
     private List<Genre> favGenders;    //Array de String (indica el/los género/s favorito/s del usuario)
     private List<String> favFilms;     //lista de IDs de películas a las que haya dado favorito
 
 
-    public User(String username, String avatar, String email, String password, List<Genre> favGenders, List<String> favFilms, Role rol) {
+    public User(String username, String avatar, String email, String password, List<Genre> favGenders, List<String> favFilms, Rol rol) {
         super();
         this.username = username;
         this.avatar = avatar;
@@ -94,12 +99,19 @@ public class User {
         this.favFilms = favFilms;
     }
 
-    public Role getRol() {
+    public Rol getRol() {
         return rol;
     }
 
-    public void setRol(Role rol) {
+    public void setRol(Rol rol) {
         this.rol = rol;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        List<GrantedAuthority> roles = new ArrayList<>();
+        roles.add(new SimpleGrantedAuthority(rol.toString()));
+        return roles;
     }
 
     @Override
@@ -115,4 +127,25 @@ public class User {
                 ", rol=" + rol +
                 '}';
     }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
+    }
+
 }
