@@ -40,7 +40,7 @@ public class FilmController {
 
     @GetMapping(value = URLBASE + "/film/{id}")
     @ApiOperation(value = "( findById ) Trae un film por Id", notes = "", response = Film.class)
-    public ResponseEntity getById(@PathVariable("id") String id) {
+    public ResponseEntity<?> getById(@PathVariable("id") String id) {
         Optional<Film> optionalFilm = filmService.getFilmById(id);
 
         if (optionalFilm.isPresent()) {
@@ -52,7 +52,7 @@ public class FilmController {
 
     @GetMapping(value = URLBASE + "/film/fav/{id}")
     @ApiOperation(value = "( findFavUserId ) Trae los films favoritos de un usuario", notes = "", response = Film.class)
-    public ResponseEntity getFavFilmUser(@PathVariable("id") String id) {
+    public ResponseEntity<?> getFavFilmUser(@PathVariable("id") String id) {
         Optional<User> optionalUser = userService.getUserById(id);
         if (optionalUser.isPresent()) {
             User usuario = optionalUser.get();
@@ -75,7 +75,7 @@ public class FilmController {
 
     @PostMapping(value = URLBASE + "/fav/film")
     @ApiOperation(value = "( Post ) Agrega un film a la favFilm de un usuario", notes = "", response = NewFavFilm.class)
-    public ResponseEntity postFavFilm(@RequestBody NewFavFilm newFavFilm) { // email - username - idFilm
+    public ResponseEntity<?> postFavFilm(@RequestBody NewFavFilm newFavFilm) { // email - username - idFilm
         Optional<User> x = userService.findByEmailAndUsername(newFavFilm.getEmail(), newFavFilm.getUsername());
         if (x.isPresent()) {
             User usuario = x.get();
@@ -98,7 +98,7 @@ public class FilmController {
 
     @PostMapping(value = URLBASE + "/film")
     @ApiOperation(value = "( Post ) Crea un film", notes = "", response = Film.class)
-    public ResponseEntity postFilm(@RequestBody Film film) {
+    public ResponseEntity<?> postFilm(@RequestBody Film film) {
         Film f = filmService.create(film);
         if (f == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Ha ocurrido un error al crear el film");
@@ -110,7 +110,7 @@ public class FilmController {
     @PutMapping(value = URLBASE + "/film/{id}")
     @ApiOperation(value = "( Put ) Modifica un film", notes = "", response = Film.class)
     @ResponseBody
-    public ResponseEntity putFilm(@PathVariable("id") String id, @RequestBody Film film) {
+    public ResponseEntity<?> putFilm(@PathVariable("id") String id, @RequestBody Film film) {
         Optional<Film> optionalfilm = this.filmService.getFilmById(id);
         if (optionalfilm.isPresent()) {
             Film f = filmService.update(id, film);

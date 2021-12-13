@@ -31,7 +31,7 @@ public class UserController {
 
     @GetMapping(value = URLBASE + "/user/{id}")
     @ApiOperation(value = "( findById ) Trae un user por Id", notes = "", response = User.class)
-    public ResponseEntity getById(@PathVariable("id") String id) {
+    public ResponseEntity<?> getById(@PathVariable("id") String id) {
         Optional<User> usuario = this.userService.getUserById(id);
         if (usuario.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(usuario.get());
@@ -42,7 +42,7 @@ public class UserController {
 
     @GetMapping(value = URLBASE + "/login/{email}/{password}")
     @ApiOperation(value = "( login ) Trae un usuario por email y password", notes = "", response = User.class)
-    public ResponseEntity getByEmailAndPassword(@PathVariable("email") String email, @PathVariable("password") String password) {
+    public ResponseEntity<?> getByEmailAndPassword(@PathVariable("email") String email, @PathVariable("password") String password) {
         Optional<User> usuario = this.userService.findByEmailAndPassword(email, password);
         if (usuario.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(usuario.get());
@@ -53,7 +53,7 @@ public class UserController {
 
     @GetMapping(value = URLBASE + "/user/{email}/{username}")
     @ApiOperation(value = "( login ) Trae un usuario por email y username", notes = "", response = User.class)
-    public ResponseEntity getByEmailAndUsername(@PathVariable("email") String email, @PathVariable("username") String username) {
+    public ResponseEntity<?> getByEmailAndUsername(@PathVariable("email") String email, @PathVariable("username") String username) {
         Optional<User> usuario = this.userService.findByEmailAndUsername(email, username);
         if (usuario.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(usuario.get());
@@ -64,7 +64,7 @@ public class UserController {
 
     @GetMapping(value = URLBASE + "/user/username/{username}")
     @ApiOperation(value = "( findByUsername ) Trae un user por username", notes = "", response = User.class)
-    public ResponseEntity getByUsername(@PathVariable("username") String username) {
+    public ResponseEntity<?> getByUsername(@PathVariable("username") String username) {
         Optional<User> usuario = this.userService.findByUsername(username);
         if (usuario.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(usuario.get());
@@ -75,7 +75,7 @@ public class UserController {
 
     @GetMapping(value = URLBASE + "/user/email/{email}")
     @ApiOperation(value = "( findByEmail ) Trae un user por email", notes = "", response = User.class)
-    public ResponseEntity getByEmail(@PathVariable("email") String email) {
+    public ResponseEntity<?> getByEmail(@PathVariable("email") String email) {
         Optional<User> usuario = this.userService.findByEmail(email);
         if (usuario.isPresent()) {
             return ResponseEntity.status(HttpStatus.OK).body(usuario.get());
@@ -86,7 +86,7 @@ public class UserController {
 
     @PostMapping(value = URLBASE + "/user")
     @ApiOperation(value = "( Post ) crea un user", notes = "", response = User.class)
-    public ResponseEntity postUser(@RequestBody User user) {
+    public ResponseEntity<?> postUser(@RequestBody User user) {
 
         Optional<User> usuario = this.userService.findByEmail(user.getEmail());
 
@@ -104,7 +104,7 @@ public class UserController {
 
     @PutMapping(value = URLBASE + "/user/{id}")
     @ApiOperation(value = "( Put ) Modifica un user", notes = "", response = User.class)
-    public ResponseEntity putUser(@PathVariable("id") String id, @RequestBody User user) {
+    public ResponseEntity<?> putUser(@PathVariable("id") String id, @RequestBody User user) {
         Optional<User> usuario = this.userService.getUserById(id);
         if (usuario.isPresent()) {
             User u = userService.update(id, user);
