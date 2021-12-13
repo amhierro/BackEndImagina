@@ -40,17 +40,6 @@ public class UserController {
         }
     }
 
-    @GetMapping(value = URLBASE + "/login/{email}/{password}")
-    @ApiOperation(value = "( login ) Trae un usuario por email y password", notes = "", response = User.class)
-    public ResponseEntity<?> getByEmailAndPassword(@PathVariable("email") String email, @PathVariable("password") String password) {
-        Optional<User> usuario = this.userService.findByEmailAndPassword(email, password);
-        if (usuario.isPresent()) {
-            return ResponseEntity.status(HttpStatus.OK).body(usuario.get());
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(String.format("No existe ningún usuario con el email: %s y la password aportada", email));
-        }
-    }
-
     @GetMapping(value = URLBASE + "/user/{email}/{username}")
     @ApiOperation(value = "( login ) Trae un usuario por email y username", notes = "", response = User.class)
     public ResponseEntity<?> getByEmailAndUsername(@PathVariable("email") String email, @PathVariable("username") String username) {

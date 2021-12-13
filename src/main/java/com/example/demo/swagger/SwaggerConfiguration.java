@@ -23,7 +23,7 @@ public class SwaggerConfiguration {
     public Docket api() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("")) //org.gobiernodecanarias.dgtnt.otsi.ca.autorizaciones.api.rest
+                .apis(RequestHandlerSelectors.basePackage(""))
                 .paths(PathSelectors.any())
                 .build()
                 .securityContexts(Arrays.asList(securityContext()))

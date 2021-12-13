@@ -35,6 +35,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/webjars/**",
             "/api/films",
             "/api/login",
+            "/api/login/**",
             "/api/user",
             "/api/user/email/**", //quitar este acceso
             "/api/film/title/**",
